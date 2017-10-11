@@ -15,6 +15,6 @@
 * ~~Image-based Reconstruction of Wire Art => http://geometry.cs.ucl.ac.uk/projects/2017/wire-art-reconstruction~~
 * ~~Position Tracking for Virtual Reality Using Commodity WiFi => http://openaccess.thecvf.com/content_cvpr_2017/html/Kotaru_Position_Tracking_for_CVPR_2017_paper.html~~
 * ~~Awesome Typography: Statistics-Based Text Effects Transfer => http://openaccess.thecvf.com/content_cvpr_2017/papers/Yang_Awesome_Typography_Statistics-Based_CVPR_2017_paper.pdf~~
-* Video Acceleration Magnification => http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhang_Video_Acceleration_Magnification_CVPR_2017_paper.pdf
+* ~~Video Acceleration Magnification => http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhang_Video_Acceleration_Magnification_CVPR_2017_paper.pdf~~
 * 
 
