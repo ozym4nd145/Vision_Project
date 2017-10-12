@@ -16,5 +16,11 @@
 * ~~Position Tracking for Virtual Reality Using Commodity WiFi => http://openaccess.thecvf.com/content_cvpr_2017/html/Kotaru_Position_Tracking_for_CVPR_2017_paper.html~~
 * ~~Awesome Typography: Statistics-Based Text Effects Transfer => http://openaccess.thecvf.com/content_cvpr_2017/papers/Yang_Awesome_Typography_Statistics-Based_CVPR_2017_paper.pdf~~
 * ~~Video Acceleration Magnification => http://openaccess.thecvf.com/content_cvpr_2017/papers/Zhang_Video_Acceleration_Magnification_CVPR_2017_paper.pdf~~
-* 
+ 
+## SIGGRAPH 2016
+* Transfiguring Portraits
 
+## Finalists
+* Virtual Studio
+* Motion deblurring from sequence of images
+* Transfiguring Potraits
