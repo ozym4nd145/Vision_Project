@@ -20,6 +20,8 @@
 ## SIGGRAPH 2016
 * Transfiguring Portraits
 
+* Building rome in a day
+
 ## Finalists
 * Virtual Studio
 * Motion deblurring from sequence of images
