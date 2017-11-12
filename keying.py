@@ -18,8 +18,9 @@ def segment_ycrcb(orig, params, tola, tolb):
 
 
 def get_region(img):
-    r = cv2.selectROI("Select window of background", img=img,
-                      fromCenter=False, showCrossair=False)
+    r = cv2.selectROI("Select window of background", img=img)
+    # r = cv2.selectROI("Select window of background", img=img,
+    #                     fromCenter=False, showCrossair=False)
     cv2.destroyAllWindows()
     return r
 
