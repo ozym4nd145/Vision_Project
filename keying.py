@@ -60,7 +60,7 @@ def mod_mask(mask, low, high):
     return mask
 
 
-# def process(img, bg, param_ycrcb, param_hls, tola, tolb, low_thresh, high_thresh, alpha, beta, gamma, sz, space, erode_sz):
+# def get_mask(img, bg, param_ycrcb, param_hls, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25, alpha=1.0, beta=0.0, gamma=1.0, sz=5, space=200, erode_sz=3):
 def get_mask(img,param_ycrcb, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25, sz=5, space=200):
     ##ENSURE THAT param_ycrcb and param_hls correspond to brigthened img
 
@@ -71,13 +71,31 @@ def get_mask(img,param_ycrcb, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.2
     mask = segment_ycrcb(brimg, param_ycrcb, tola, tolb)
     mask = mod_mask(mask, low_thresh, high_thresh)
 
-#     kernel = np.ones((erode_sz,erode_sz),np.uint8)
-#     mask = cv2.erode(mask,kernel,iterations = 1)
+    erode_sz = 2
+    kernel = np.ones((erode_sz,erode_sz),np.uint8)
+    mask = cv2.erode(mask,kernel,iterations = 1)
     return mask
     # mask = np.expand_dims(mask, -1)
 
     # new_img = (mask * img + (1 - mask) * bg).astype(np.uint8)
     # return (mask, new_img)
+
+def process_img(img,param_hls,mul0=20,mul1=30):
+    hls_img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
+    h_mean = param_hls[0]
+    h_std = param_hls[1]
+    h_channel = hls_img[:, :, 0]
+    
+    low_th = mul0 * h_std
+    hi_th = mul1 * h_std
+
+    sat_mask = (np.abs(h_channel-h_mean)/(hi_th-low_th)) - (low_th/(hi_th-low_th))
+    sat_mask = np.clip(sat_mask,0.0,1.0)
+
+    hls_img[:, :, 2] = hls_img[:, :, 2] * sat_mask
+    new_img = cv2.cvtColor(hls_img, cv2.COLOR_HLS2BGR).astype(np.uint8)
+
+    return new_img
 
 def get_bgra(img,mask):
     assert (len(mask.shape) == 2)  # (x,y)
