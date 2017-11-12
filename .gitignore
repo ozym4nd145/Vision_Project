@@ -1,3 +1,5 @@
 ignore/
 .ipynb_checkpoints/
+video/
 keying/processed_vid/*/image
+.vscode/
