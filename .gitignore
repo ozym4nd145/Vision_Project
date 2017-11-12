@@ -1,1 +1,3 @@
 ignore/
+.ipynb_checkpoints/
+keying/processed_vid/*/image
