@@ -7,16 +7,20 @@
 using namespace std;
 using namespace cv;
 
-Rect2d get_region(Mat img){
+Mat INT_1C,FLOAT_1C,INT_3C,FLOAT_3C;
+Mat FLOAT_1C_2,FLOAT_1C_3,FLOAT_1C_4;
+std::vector<Mat> PLANES(4);
+Mat INT_4C;
+
+Rect2d get_region(const Mat& img){
     Rect2d r = selectROI(img);
     destroyAllWindows();
     return r;
 }
 
-param_ycrcb get_params_ycrcb(Mat img, Rect2d region){
-    Mat ycrcb_img;
-    cvtColor(img, ycrcb_img,COLOR_BGR2YCrCb);
-    Mat green_template = ycrcb_img(region);
+param_ycrcb get_params_ycrcb(const Mat& img, Rect2d region){
+    cvtColor(img, INT_3C,COLOR_BGR2YCrCb);
+    Mat green_template = INT_3C(region);
     Scalar mean_key;
     mean_key = mean(green_template);
     param_ycrcb params;
@@ -25,82 +29,81 @@ param_ycrcb get_params_ycrcb(Mat img, Rect2d region){
     return params;
 }
 
-param_hls get_params_hls(Mat img, Rect2d region){
-    Mat hls_img;
-    cvtColor(img, hls_img,COLOR_BGR2HLS);
-    Mat green_template = img(region);
+param_hls get_params_hls(const Mat& img, Rect2d region){
+    // Mat hls_img;
+    // cvtColor(img, hls_img,COLOR_BGR2HLS);
+    cvtColor(img, INT_3C,COLOR_BGR2HLS);
+    
+    Mat green_template = INT_3C(region);
     Scalar mean_key,std_key;
     meanStdDev(green_template,mean_key,std_key);
     return param_hls(mean_key,std_key);
 }
 
-Mat brighten(Mat img, double alpha, double beta, double gamma){
-    Mat cor_img = img.clone();
-    Mat bright_img = alpha * cor_img + beta;
-    Mat gam_cor;
-    pow(gam_cor, gamma,bright_img);
-    return gam_cor;
-}
+// Mat brighten(const Mat& img, double alpha, double beta, double gamma){
+//     Mat cor_img = img.clone();
+//     Mat bright_img = alpha * cor_img + beta;
+//     Mat gam_cor;
+//     pow(gam_cor, gamma,bright_img);
+//     return gam_cor;
+// }
 
 Mat segment_ycrcb(const Mat& orig, const param_ycrcb& params, double tola, double tolb){
-    Mat ycrcb_im_mat;
-    cvtColor(orig, ycrcb_im_mat, COLOR_BGR2YCrCb);
+    cvtColor(orig, INT_3C, COLOR_BGR2YCrCb);    
     double Cb_key = params.Cb;
     double Cr_key = params.Cr;
-    Mat planes[3];
-    Mat ycrcb_im;
-    ycrcb_im_mat.convertTo(ycrcb_im,CV_32FC3);
-    split(ycrcb_im,planes);
-    Mat blue = planes[2];
-    Mat red = planes[1];
+    // Mat planes[3];
+    // Mat ycrcb_im;
+    INT_3C.convertTo(FLOAT_3C,CV_32FC3);
+    split(FLOAT_3C,PLANES);
+    // Mat blue = planes[2];
+    // Mat red = planes[1];
    
-    Mat diffbsq;
-    pow((blue - Cb_key),2,diffbsq);
+    // Mat diffbsq;
+    pow((PLANES[2] - Cb_key),2,FLOAT_1C);
 
-    Mat diffrsq;
-    pow((red - Cr_key),2,diffrsq);
+    // Mat diffrsq;
+    pow((PLANES[1] - Cr_key),2,FLOAT_1C_2);
 
-    Mat dist;
-    sqrt((diffbsq + diffrsq),dist);
+    // Mat dist;
+    sqrt((FLOAT_1C + FLOAT_1C_2),FLOAT_1C_3);
 
-    Mat mask;
-    mask =  ((dist - tola)*1.0 / (tolb - tola));
+    // Mat mask;
+    FLOAT_1C_4 =  ((FLOAT_1C_3 - tola)*1.0 / (tolb - tola));
 
-    mask.setTo(0.0, dist < tola);
-    mask.setTo(1.0, dist > tolb);
-    return mask;
+    FLOAT_1C_4.setTo(0.0, FLOAT_1C_3 < tola);
+    FLOAT_1C_4.setTo(1.0, FLOAT_1C_3 > tolb);
+    return FLOAT_1C_4;
 }
 
-Mat mod_mask(const Mat& mask_fn, double low, double high){
-    Mat mask = mask_fn.clone();
+void mod_mask(Mat& mask, double low, double high){
+    // Mat mask = mask_fn.clone();
     mask.setTo(1.0,mask > high);
     mask.setTo(0.0,mask < low);
-    return mask;
+    return;
 }
 
 Mat get_mask(const Mat& img,param_ycrcb params, double tola, double tolb, double low_thresh, double high_thresh, double sz, double space,double alpha,double beta,double gamma){
 
-    Mat brimg;
+    // Mat brimg;
     // brimg = brighten(img,alpha,beta,gamma);
-    bilateralFilter(img,brimg,sz, space, space);
-    Mat mask;
-    // imshow("bright img",brimg);
-    mask = segment_ycrcb(brimg, params, tola, tolb);
-    // imshow("Mask after Segment",mask);
-    mask = mod_mask(mask, low_thresh, high_thresh);
-    // imshow("mask after Mod",mask);    
-    return mask;
+    bilateralFilter(img,INT_3C,sz, space, space);
+    // Mat mask;
+    FLOAT_1C = segment_ycrcb(INT_3C, params, tola, tolb);
+    mod_mask(FLOAT_1C, low_thresh, high_thresh);
+    return FLOAT_1C;
 }
 Mat get_bgra(const Mat& img,const Mat& mask){
-    std::vector<Mat> planes;
-    split(img,planes);
-    Mat mask_temp,mask_int;
-    mask_temp = mask*255;
-    mask_temp.convertTo(mask_int,CV_8UC1);
-    planes.push_back(mask_int);
-    Mat res;
-    merge(planes,res);
-    return res;
+    // std::vector<Mat> planes;
+    split(img,PLANES);
+    // Mat mask_temp,mask_int;
+    FLOAT_1C = mask*255;
+    FLOAT_1C.convertTo(INT_1C,CV_8UC1);
+    PLANES.push_back(INT_1C);
+    // PLANES[3] =  INT_1C;
+    // Mat res;
+    merge(PLANES,INT_4C);
+    return INT_4C;
 }
 
 

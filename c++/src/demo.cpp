@@ -11,20 +11,22 @@ using namespace cv;
 int main(int argc,char**argv){
 
     if(argc<5){
-        cout<<"Correct Usage"<<endl<<"./virtual_studio <green_screen_video> <background_video> <mask_vidio> <output_path>\n"<<endl;
+        cout<<"Correct Usage"<<endl<<"./virtual_studio <green_screen_video> <background_video> <mask file> <output_path>\n"<<endl;
         exit(-1);
     }
     VideoCapture cap_green(argv[1]);
     VideoCapture cap_vid(argv[2]);
-    VideoCapture cap_mask(argv[3]);
+    
+    read_mask_corner_points(argv[3]);
 
     double fps = cap_green.get(CV_CAP_PROP_FPS);
-    Mat img,bg,mask;
+    Mat img,bg,res;
     cap_green.read(img);
     cap_vid.read(bg);
-    cap_mask.read(mask);
+
     Rect2d region = get_region(img);
     param_ycrcb key_param = get_params_ycrcb(img,region);
+    fill_img_corners(img);
     
     int ct=0;
     int fourcc = VideoWriter::fourcc('X','V','I','D');
@@ -34,10 +36,9 @@ int main(int argc,char**argv){
     
     while(true){
         clock_t start = clock();
-		Mat img,bg,mask;
-        if (!(cap_green.read(img) && cap_vid.read(bg) && cap_mask.read(mask)))
+        if (!(cap_green.read(img) && cap_vid.read(bg)))
             break;
-        Mat res = project_img(img,bg,mask,key_param);
+        res = project_img(img,bg,key_param,ct+1);
         // imshow("Video",res);
         // char file_name[100];
         // sprintf(file_name,"../temp/img%04d.png",ct);

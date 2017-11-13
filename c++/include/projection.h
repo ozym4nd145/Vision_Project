@@ -9,12 +9,10 @@
 
 using namespace cv;
 
-vector<Point2i> order_points(vector<Point2i> pts);
-vector<Point2i> get_corners_mask(const Mat& mask_fn);
-vector<Point2i> get_corners_img(const Mat& img);
-Mat get_transform(vector<Point2i> imgcorners,vector<Point2i> maskcorners);
-Mat project_to_mask(const Mat& img,const Mat& mask);
-Mat project_img(const Mat& img, const Mat& bg, const Mat& mask, param_ycrcb key_param);
+void read_mask_corner_points(string filename);
+void fill_img_corners(const Mat& img);
+Mat project_to_mask(const Mat& img,int frame_no,Size bg_size);
+Mat project_img(const Mat& img, const Mat& bg, param_ycrcb key_param, int frame_no);
 
 
 #endif
