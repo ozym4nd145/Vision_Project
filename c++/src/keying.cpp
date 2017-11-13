@@ -84,13 +84,23 @@ void mod_mask(Mat& mask, double low, double high){
 }
 
 Mat get_mask(const Mat& img,param_ycrcb params, double tola, double tolb, double low_thresh, double high_thresh, double sz, double space,double alpha,double beta,double gamma){
-
+    // cout<<"Entered get mask"<<endl;
     // Mat brimg;
     // brimg = brighten(img,alpha,beta,gamma);
+    // clock_t start = clock(); 
+    
     bilateralFilter(img,INT_3C,sz, space, space);
+    // cout<<"bilateral filter "<<(clock() - start)*1.0/CLOCKS_PER_SEC<<endl;
+    // start = clock(); 
     // Mat mask;
     FLOAT_1C = segment_ycrcb(INT_3C, params, tola, tolb);
+    // cout<<"segment "<<(clock() - start)*1.0/CLOCKS_PER_SEC<<endl;
+    // start = clock(); 
+    
     mod_mask(FLOAT_1C, low_thresh, high_thresh);
+    // cout<<"mod mask "<<(clock() - start)*1.0/CLOCKS_PER_SEC<<endl;
+    // start = clock(); 
+    
     return FLOAT_1C;
 }
 Mat get_bgra(const Mat& img,const Mat& mask){

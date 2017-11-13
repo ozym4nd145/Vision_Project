@@ -11,7 +11,7 @@ include_directories(include)
 include_directories( ${OpenCV_INCLUDE_DIRS} )
 
 
-set(CMAKE_CXX_FLAGS "-O3 -std=c++11")
+set(CMAKE_CXX_FLAGS "-O3 -std=c++11 -march=native")
 
 add_executable(virtual_studio src/demo.cpp src/helper.cpp src/keying.cpp src/projection.cpp)
 
