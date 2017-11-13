@@ -49,12 +49,12 @@ def get_key_param(img):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(
         description='Realtime virtual studio')
+    parser.add_argument('vid', metavar='V',
+                        help='path to the input green screen video')
     parser.add_argument('env', metavar='E',
                         help='path to environment video')
     parser.add_argument('mask', metavar='M',
                         help='path to mask file')
-    parser.add_argument('vid', metavar='V',
-                        help='path to the input green screen video')
     parser.add_argument('out', metavar='O',
                         help='path to the write the output video')
     parser.add_argument('--nowrite', action="store_true",
