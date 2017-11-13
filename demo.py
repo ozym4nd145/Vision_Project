@@ -5,11 +5,13 @@ import projection
 import argparse
 
 
-def project_img(img, bg, mask_corners, key_param, tola=16, tolb=50, low_thresh=0.05, erode_sz=3,
-                high_thresh=0.25, sz=5, space=200, sat_mul_lo=5, sat_mul_hi=7,scale_blur=20,blur_size=3):
+def project_img(img, bg, mask_corners, key_param, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25,
+                erode_sz=3, sz=5, space=200, sat_mul_lo=5, sat_mul_hi=7, scale_blur=20, blur_size=3):
+
     key_mask = keying.get_mask(
         img, key_param[0], tola, tolb, low_thresh, high_thresh, sz, space, erode_sz)
     mod_img = keying.process_img(img, key_param[1], sat_mul_lo, sat_mul_hi)
+
 
     bgra = keying.get_bgra(mod_img, key_mask)
     res = projection.project_to_mask(bgra, mask_corners, bg.shape)
@@ -17,7 +19,6 @@ def project_img(img, bg, mask_corners, key_param, tola=16, tolb=50, low_thresh=0
     trans_mask = np.expand_dims(
         (res[:, :, 3]).astype(np.float32) / 255, -1)  # (x,y)
 
-#     r1 = np.multiply(trans_img,trans_mask)
     t_mask = np.tile(trans_mask, 3)
 
     trans_img = trans_img.astype(np.float32)
@@ -101,19 +102,57 @@ if __name__ == "__main__":
 
     iteration = 0
     end_iter = len(corners)
+
+    ## Creating track bars
+
+    def nothing(x):
+        pass
+    cv2.namedWindow('controls')
+    cv2.createTrackbar('Keying tol low', 'controls', 16, 100, nothing)
+    cv2.createTrackbar('Keying tol high', 'controls', 50, 200, nothing)
+    cv2.createTrackbar('Mask low Thresh (x100)', 'controls', 5, 100, nothing)
+    cv2.createTrackbar('Mask high Thresh (x100)', 'controls', 25, 100, nothing)
+    cv2.createTrackbar('Erode size', 'controls', 3, 10, nothing)
+    cv2.createTrackbar('BiLat size', 'controls', 5, 100, nothing)
+    cv2.createTrackbar('BiLat space', 'controls', 200, 500, nothing)
+    cv2.createTrackbar('Sat mul low', 'controls', 5, 100, nothing)
+    cv2.createTrackbar('Sat mul high', 'controls', 7, 100, nothing)
+    cv2.createTrackbar('Light mask strength', 'controls', 20, 100, nothing)
+    cv2.createTrackbar('Light mask size', 'controls', 3, 20, nothing)
+
     while True:
         ret1, img = cap_green.read()
         ret2, bg = cap_vid.read()
 
         if (not(ret1 and ret2 and (iteration != end_iter))):
-            break
+            cap_green = cv2.VideoCapture(green_vid_path)
+            cap_vid = cv2.VideoCapture(env_vid_path)
+            iteration = 0
+            continue
+
 
         if args.resize!=None:
             scale = int(args.resize)
             img = cv2.resize(img,(img.shape[1]//scale,img.shape[0]//scale))
             bg = cv2.resize(bg,(bg.shape[1]//scale,bg.shape[0]//scale))
+        
+        tola = cv2.getTrackbarPos('Keying tol low', 'controls')
+        tolb = cv2.getTrackbarPos('Keying tol high', 'controls')
+        low_thresh = cv2.getTrackbarPos('Mask low Thresh (x100)', 'controls')/100
+        high_thresh = cv2.getTrackbarPos('Mask high Thresh (x100)', 'controls')/100
+        erode_sz = cv2.getTrackbarPos('Erode size', 'controls')
+        sz = cv2.getTrackbarPos('BiLat size', 'controls')
+        space  = cv2.getTrackbarPos('BiLat space', 'controls')
+        sat_mul_lo  = cv2.getTrackbarPos('Sat mul low', 'controls')
+        sat_mul_hi  = cv2.getTrackbarPos('Sat mul high', 'controls')
+        scale_blur  = cv2.getTrackbarPos('Light mask strength', 'controls')
+        blur_size  = cv2.getTrackbarPos('Light mask size', 'controls')
 
-        res = project_img(img, bg, corners[iteration], key_param)
+        res = project_img(img, bg, corners[iteration], key_param, tola = tola ,tolb = tolb ,
+                          low_thresh = low_thresh ,high_thresh = high_thresh ,erode_sz = erode_sz ,
+                          sz = sz ,space = space ,sat_mul_lo = sat_mul_lo ,sat_mul_hi = sat_mul_hi ,
+                          scale_blur = scale_blur ,blur_size = blur_size)
+        iteration += 1
 
         if not args.nowrite:
             vid.write(res)
