@@ -3,3 +3,7 @@ ignore/
 video/
 keying/processed_vid/*/image
 .vscode/
+__pycache__
+*.pyc
+c++/build
+

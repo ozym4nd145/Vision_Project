@@ -62,7 +62,7 @@ def mod_mask(mask, low, high):
 
 
 # def get_mask(img, bg, param_ycrcb, param_hls, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25, alpha=1.0, beta=0.0, gamma=1.0, sz=5, space=200, erode_sz=3):
-def get_mask(img,param_ycrcb, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25, sz=5, space=200):
+def get_mask(img,param_ycrcb, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25, sz=5, space=200,erode_sz=2):
     ##ENSURE THAT param_ycrcb and param_hls correspond to brigthened img
 
     #     brimg = brighten(img,alpha,beta,gamma)
@@ -72,7 +72,6 @@ def get_mask(img,param_ycrcb, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.2
     mask = segment_ycrcb(brimg, param_ycrcb, tola, tolb)
     mask = mod_mask(mask, low_thresh, high_thresh)
 
-    erode_sz = 2
     kernel = np.ones((erode_sz,erode_sz),np.uint8)
     mask = cv2.erode(mask,kernel,iterations = 1)
     return mask
