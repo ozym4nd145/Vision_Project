@@ -3,6 +3,7 @@ import numpy as np
 import keying
 import projection
 import argparse
+import time
 
 
 def project_img(img, bg, mask_corners, key_param, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.25,
@@ -10,33 +11,32 @@ def project_img(img, bg, mask_corners, key_param, tola=16, tolb=50, low_thresh=0
 
     key_mask = keying.get_mask(
         img, key_param[0], tola, tolb, low_thresh, high_thresh, sz, space, erode_sz)
-    mod_img = keying.process_img(img, key_param[1], sat_mul_lo, sat_mul_hi)
-
+    
+    if not (sat_mul_hi == 0):
+        mod_img = keying.process_img(img, key_param[1], sat_mul_lo, sat_mul_hi)
+    else:
+        mod_img = img
 
     bgra = keying.get_bgra(mod_img, key_mask)
+
     res = projection.project_to_mask(bgra, mask_corners, bg.shape)
     trans_img = res[:, :, :3]  # (x,y,3)
     trans_mask = np.expand_dims(
         (res[:, :, 3]).astype(np.float32) / 255, -1)  # (x,y)
 
-    t_mask = np.tile(trans_mask, 3)
-
-    trans_img = trans_img.astype(np.float32)
-    bg = bg.astype(np.float32)
-
-    r1 = cv2.multiply(trans_img, t_mask)
-    r2 = cv2.multiply(bg, 1 - t_mask)
-
-    result = cv2.add(r1, r2)
+    result = trans_img * trans_mask + bg * (1 - trans_mask)
     result = result.astype(np.uint8)
 
-    light_mask = np.expand_dims(
-        scale_blur * cv2.blur(trans_mask * (1 - trans_mask), (blur_size, blur_size)), -1)
-    # light_mask = keying.mod_mask(light_mask, 0, 1.0)
-    light_mask = np.clip(light_mask, 0.0, 1.0)
-    light = bg * light_mask
-    diffl = result * (1 - light_mask)
-    light_result = (light + diffl).astype(np.uint8)
+    if not (scale_blur <= 0 or blur_size<=1):
+        light_mask = np.expand_dims(
+            scale_blur * cv2.blur(trans_mask * (1 - trans_mask), (blur_size, blur_size)), -1)
+        # light_mask = keying.mod_mask(light_mask, 0, 1.0)
+        light_mask = np.clip(light_mask, 0.0, 1.0)
+        light = bg * light_mask
+        diffl = result * (1 - light_mask)
+        light_result = (light + diffl).astype(np.uint8)
+    else:
+        light_result = result
 
     return light_result
 
@@ -121,6 +121,8 @@ if __name__ == "__main__":
     cv2.createTrackbar('Light mask size', 'controls', 3, 20, nothing)
 
     while True:
+        start_time = time.time()
+
         ret1, img = cap_green.read()
         ret2, bg = cap_vid.read()
 
@@ -152,11 +154,18 @@ if __name__ == "__main__":
                           low_thresh = low_thresh ,high_thresh = high_thresh ,erode_sz = erode_sz ,
                           sz = sz ,space = space ,sat_mul_lo = sat_mul_lo ,sat_mul_hi = sat_mul_hi ,
                           scale_blur = scale_blur ,blur_size = blur_size)
+        # res = project_img(img, bg, corners[iteration], key_param, tola = 16 ,tolb = 50 ,
+        #                   low_thresh = 0.05 ,high_thresh = 0.25 ,erode_sz = 0 ,
+        #                   sz = 0 ,space = 0 ,sat_mul_lo = 0 ,sat_mul_hi = 0 ,
+        #                   scale_blur = 0 ,blur_size = 0)
         iteration += 1
 
         if not args.nowrite:
             vid.write(res)
-        
+
+        end_time = time.time()
+        print("Time: ",(end_time-start_time))
+
         if args.show:
             cv2.imshow("result",res)
             ret = cv2.waitKey(20)

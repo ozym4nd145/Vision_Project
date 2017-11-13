@@ -67,18 +67,17 @@ def get_mask(img,param_ycrcb, tola=16, tolb=50, low_thresh=0.05, high_thresh=0.2
 
     #     brimg = brighten(img,alpha,beta,gamma)
     brimg = img
-    brimg = cv2.bilateralFilter(brimg, sz, space, space)
+
+    if not (sz<=0 or space<=1):
+        brimg = cv2.bilateralFilter(brimg, sz, space, space)
 
     mask = segment_ycrcb(brimg, param_ycrcb, tola, tolb)
     mask = mod_mask(mask, low_thresh, high_thresh)
 
-    kernel = np.ones((erode_sz,erode_sz),np.uint8)
-    mask = cv2.erode(mask,kernel,iterations = 1)
+    if not(erode_sz <= 1):
+        kernel = np.ones((erode_sz,erode_sz),np.uint8)
+        mask = cv2.erode(mask,kernel,iterations = 1)
     return mask
-    # mask = np.expand_dims(mask, -1)
-
-    # new_img = (mask * img + (1 - mask) * bg).astype(np.uint8)
-    # return (mask, new_img)
 
 def process_img(img,param_hls,mul0=20,mul1=30):
     hls_img = cv2.cvtColor(img, cv2.COLOR_BGR2HLS)
