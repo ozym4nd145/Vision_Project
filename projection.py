@@ -43,10 +43,10 @@ def get_corners_img(img):
 def get_transform(imgcorners,maskcorners):
     return cv2.getPerspectiveTransform(imgcorners, maskcorners)
 
-def project_to_mask(img,mask):
-    mask_corner = get_corners_mask(mask)
+def project_to_mask(img,mask_corner,shape):
+    ## shape is the shape of mask in numpy dimension i.e. (y,x) in image coordinates
     img_corner = get_corners_img(img)
     transform = get_transform(img_corner,mask_corner)
     new_img = cv2.warpPerspective(
-        img, transform, (mask.shape[1], mask.shape[0]))
+        img, transform, (shape[1], shape[0]))
     return new_img
