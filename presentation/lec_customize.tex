@@ -1,0 +1,102 @@
+%%%%%%%%%%% Beamer  customization file  %%%%%%%%%%%%
+%%%%%%%%%%% For giving lectures %%%%%%%%%%%%%%%%%%%%
+
+
+
+\ifnum\handout=1  % see above for an alternative which uses two preamble files
+\documentclass[handout,13pt,compress,c]{beamer}
+\usepackage{algorithm,algorithmic}
+\usepackage[final]{pgfpages}
+\usepackage{comment}
+\usepackage{handoutWithNotes}
+\usepackage{pifonts}
+%\setbeameroption{second mode text on second screen}
+%\pgfpagesuselayout{4 on 1}[letterpaper,landscape,border shrink=4mm]
+\pgfpagesuselayout{3 on 1 with notes}[letterpaper,landscape,border shrink=0.5in]
+
+% or: \pgfpagesuselayout{2 on 1}[letterpaper,border shrink=4mm]
+\setbeamertemplate{footline}[page number]   % omit if don't want slide number at bottom right
+% use \setbeamertemplate{footline}[text line]{xxxx} if you want xxxx at bottom left of each slide
+% use \setbeamertemplate{footline}[text line]{xxxx\hfill\thepage}
+%  if you want xxxx at bottom left, page # at bottom right
+\else
+\documentclass[13pt,compress,c]{beamer}
+\fi
+
+
+%%% Themes, font, color, 
+% \usetheme{CambridgeUS}
+% \usetheme{PaloAlto}
+% \usetheme{Berkeley}
+% \usetheme{AnnArbor}
+% \usetheme{Boadilla}
+% \usetheme{AnnArbor}
+\usetheme{CambridgeUS}
+\usecolortheme{beaver}
+% \usecolortheme{crane}
+% \usecolortheme{wolverine}
+% \usecolortheme{dolphin}
+\usefonttheme[onlymath]{serif}
+%\usefonttheme{serif}
+%\usepackage[T1]{fontenc}
+%\usepackage[scaled]{helvet}
+%\usepackage{arev}
+% Also try PaloAlto, Warsaw, Malmoe, Madrid, Berlin, Darmstadt; see
+%  /usr/share/texmf/tex/latex/beamer/themes/theme and the above gallery.
+% PaloAlto has section and subsection titles in left panel with highlighting
+% Darnstadt shows section names at top with progress bubbles
+% \usefonttheme{serif}
+% Another nice theme courtesy of David Airey:
+% \usetheme[secheader]{Boadilla}                                                                                                                                       
+% \definecolor{mygold}{rgb}{0.85, 0.60, 0.00}                                                                                                                          
+% \usecolortheme[named=mygold]{structure}                                                                                                                              
+% \setbeamercovered{dynamic}                                                                                                                                           
+
+
+\usepackage{graphicx}
+\usepackage{natbib}           % for author year citations \citet \citep
+\usepackage{relsize}          % for \smaller etc.
+\DeclareGraphicsExtensions{.pdf, .jpg, .png}
+
+\ifnum\notes=1 \setbeameroption{show notes} \fi
+\usepackage{mydef}
+
+%%% logos
+
+\usepackage[absolute,overlay]{textpos}
+
+\newcommand{\unilogo}{
+  \setlength{\TPHorizModule}{1pt}
+  \setlength{\TPVertModule}{1pt}
+   % textblock{}{x,y}: pos(x) = leftUpperCorner + (x * \TPHorizModule), pos(y) = leftUpperCorner - (y * \TPVertModule)
+  %\begin{textblock}{1}(8,245)
+  % \figw{USClogoSimple2.jpg}{.123}
+  %\end{textblock}
+  }
+
+%\logo{\figw{USClogoSimple2.jpg}{.123}}
+
+
+\mode<presentation>
+\hypersetup{pdfpagemode=FullScreen}
+\AtBeginSection[]
+{
+   \begin{frame}
+       \ft{Outline}
+       \tableofcontents[currentsection,hideothersubsections]
+   \end{frame}
+}
+
+\setbeamertemplate{caption}{\insertcaption}
+
+%%%%% Mathematics %%%%
+%\input{math_definition}
+\usepackage{pdfpages}
+\usepackage{algorithm,algorithmic}
+%% COVER PAGE
+% \date{September 21, 2017}
+\title{Virtual Studio}
+% \author{Aman Agrawal}
+% \institute{aman.cs115@cse.iitd.ac.in}
+
+

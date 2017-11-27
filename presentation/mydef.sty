@@ -1,0 +1,180 @@
+\ProvidesPackage{mydef}
+\setbeamerfont{footnote}{size=\tiny}
+
+%\newcommand\heading[1]{%
+%  \par\bigskip
+%  {\color{blue}\Large\bfseries#1}\par\smallskip}
+%%
+
+\newcommand{\inp}{\ensuremath{\stackrel{p}{\rightarrow}}}
+\newcommand{\law}{\ensuremath{\stackrel{d}{\rightarrow}}}
+\newcommand{\iid}{\ensuremath{\stackrel{iid}{\sim}}}
+\newcommand{\bm}{\ensuremath{\boldsymbol}}
+\newcommand{\RR}{\ensuremath{\mathbb{R}}}  %%reals
+\newcommand{\EE}{\ensuremath{\mathbb{E}}}  %% expectation
+\newcommand{\PP}{\ensuremath{\mathbb{P}}}  %% probability
+\newcommand{\VV}{\ensuremath{\text{Var}}}   %% variance
+\newcommand{\CV}{\ensuremath{\text{Cov}}}   %% variance
+\newcommand{\Bin}{\ensuremath{\text{Bin}}} %% binomial random variable
+\newcommand{\Mult}{\ensuremath{\text{Mult}}} %% multinomial random variable
+\newcommand{\Ber}{\ensuremath{\text{Ber}}} %% binomial random variable
+\newcommand{\Dir}{\ensuremath{\text{Dir}}} %% Dirichlet random variable
+\newcommand{\Poi}{\ensuremath{\text{Pois}}} %% poison random variable
+\newcommand{\Exp}{\ensuremath{\text{Exp}}} %% poison random variable
+\newcommand{\Nor}{\ensuremath{\mathcal{N}}} %% Normal
+\newcommand{\nord}[2]{\ensuremath{\mathcal{N} (#1, #2) }} %% Normal
+\newcommand{\norpdf}[3]{\ensuremath{ \frac{1}{\sqrt{2\pi\#3 ^2}} \exp{\left( -\frac{{\left(#1 - #2\right)}^2}{2#3^2} \right) }}} %% Normal
+\newcommand{\berd}[1]{\ensuremath{ \Ber\left (#1\right) }}
+\newcommand{\bind}[2]{\ensuremath{ \Bin\left (#1,#2\right) }}
+\newcommand{\eqdef}{\overset{\Delta}{=}}
+
+\newcommand{\lik}{\ensuremath{\mathcal{L}}} %%
+\newcommand{\logl}{\ensuremath{\log \mathcal{L} }} %%
+\newcommand{\llik}{\ensuremath{\mathcal{L}\mathcal{L} }} %%
+\newcommand{\nll}{\ensuremath{\mathcal{N}\mathcal{L}\mathcal{L} }} %%
+%\newcommand{\logl1}{\ensuremath{\log \mathcal{L} }} %%
+
+\newcommand{\one}{\ensuremath{\mathbf{1}}}  %% expectation
+\newcommand{\bas}{\ensuremath{\mathbf{e}}}  %% expectation
+\newcommand{\attime}[2]{\ensuremath{#1 ^{(#2)}}}
+\newcommand{\id}[1]{\ensuremath{\one\left(#1\right)}}
+\newcommand{\del}[1]{\ensuremath{\delta\left(#1\right)}}
+\newcommand{\norm}[2]{\lVert#1\rVert_{#2}}
+\newcommand{\lonenorm}[1]{\norm{#1}{1}}
+\newcommand{\ltwonorm}[1]{\norm{#1}{2}}
+\newcommand{\pow}[2]{\ensuremath{ #1^#2}}
+\newcommand{\sq}[1]{\pow{ #1}{2} }
+\newcommand{\EM}[1]{\ensuremath {\EE \left[ #1 \right]}}
+\newcommand{\ef}[1]{\ensuremath {\exp \left( #1 \right)}}
+\newcommand{\VM}[1]{\ensuremath {\VV \left[ #1 \right]}}
+\newcommand{\CM}[1]{\ensuremath {\CV \left[ #1 \right]}}
+
+
+\usepackage{caption}
+\captionsetup[figure]{labelformat=empty}% redefines the caption setup of the figures environment in the beamer class.
+
+\beamertemplatenavigationsymbolsempty
+
+\mode<presentation>
+{
+%  \usetheme{bunsen}
+%  \setbeamercovered{transparent}
+  \setbeamertemplate{items}[circle]
+}
+
+% color definitions
+\usepackage{color}
+\definecolor{uipoppy}{RGB}{225, 64, 5}
+\definecolor{uipaleblue}{RGB}{96,123,139}
+\definecolor{uiblack}{RGB}{0, 0, 0}
+
+% caption styling
+\DeclareCaptionFont{uiblack}{\color{uiblack}}
+\DeclareCaptionFont{uipoppy}{\color{uipoppy}}
+\captionsetup{labelfont={uipoppy},textfont=uiblack}
+
+
+\AtBeginSection[]
+{
+  \begin{frame}<beamer>
+    \frametitle{Outline}
+    \tableofcontents[currentsection]
+  \end{frame}
+}
+
+%\newenvironment{myblock}[1]{
+%\begin{block}{\centerline{#1}}}
+%{\end{block}}
+
+\makeatletter
+\setbeamertemplate{theorem begin}
+{%
+  \inserttheoremheadfont% \bfseries
+  \inserttheoremname 
+  \ifx\inserttheoremaddition\@empty\else\ (\inserttheoremaddition)\fi%
+  \normalfont
+}
+\setbeamertemplate{theorem end}{%
+\vspace{.2cm}
+  % empty
+}
+\makeatother
+\theoremstyle{definition}
+\newtheorem{mydef}[theorem]{}
+
+
+\theoremstyle{mystyle}
+\newtheorem*{remark}{Remark}
+\newcommand{\eat}[1]{}
+
+% define fonts
+\newcommand{\vct}[1]{\boldsymbol{#1}} % vector
+\newcommand{\mat}[1]{\boldsymbol{#1}} % matrix
+
+%%%% Special math symbols
+\newcommand{\field}[1]{\mathbb{#1}}
+\newcommand{\R}{\field{R}} % real domain
+\newcommand{\C}{\field{C}} % complex domain
+\newcommand{\F}{\field{F}} % functional domain
+%\newcommand{\T}{^{\top}\!\!} % transpose
+\newcommand{\T}{^{\textrm T}} % transpose
+\newcommand{\TN}{^{-\textrm T}} % transpose
+
+
+%%% define constant
+%\newcommand{\cst}[1]{\mathsf{#1}}
+\newcommand{\cst}[1]{#1}
+
+%% operator in linear algebra, functional analysis
+\newcommand{\inner}[2]{#1\cdot #2}
+%\newcommand{\norm}[1]{\|#1\|}
+\newcommand{\twonorm}[1]{\|#1\|_2^2}
+% operator in functios, maps such as M: domain1 --> domain 2
+\newcommand{\Map}[1]{\mathcal{#1}}
+
+% operator in probability: expectation, covariance,
+\newcommand{\ProbOpr}[1]{\mathbb{#1}}
+% independence
+\newcommand\independent{\protect\mathpalette{\protect\independenT}{\perp}}
+\def\independenT#1#2{\mathrel{\rlap{$#1#2$}\mkern2mu{#1#2}}}
+% conditional independence
+\newcommand{\cind}[3]{{#1} \independent{#2}\,|\,#3}
+% conditional expectation
+\newcommand{\cndexp}[2]{\ProbOpr{E}\,[ #1\,|\,#2\,]}
+
+% operator in optimization
+\DeclareMathOperator{\argmax}{arg\,max}
+\DeclareMathOperator{\argmin}{arg\,min}
+\newcommand{\todo}[1]{{\color{red}#1}}
+
+% Convenient shortcut
+\newcommand{\ft}[1]{\frametitle{#1}}
+\newcommand{\fst}[1]{\framesubtitle{#1}}
+\newcommand{\bi}{\begin{itemize}}
+\newcommand{\ei}{\end{itemize}}
+\newcommand{\bframe}{\begin{frame}}
+\newcommand{\eframe}{\end{frame}}
+
+\newcommand{\myblock}[1]{\structure{\textbf{\color{blue}#1}}}
+\newcommand{\myemph}[1]{\emph{\color{red}#1}}
+
+%Macros to make graphics insertions easy
+%Command for sizing to width    \figw{file}{fraction of \textwidth}
+\newcommand{\figw}[2]{\centerline{\includegraphics[width=#2\textwidth]{#1}}}
+%Command for sizing to height   \figh{file}{fraction of \textheight}
+\newcommand{\figh}[2]{\centerline{\includegraphics[height=#2\textheight]{#1}}}
+%Use \figh{graphics file name}{1} to size to whole text height
+%For graphics needing no shrinkage:  \fig{file}
+\newcommand{\fig}[1]{\centerline{\includegraphics{#1}}}
+
+\newcommand{\foot}[1]{\footnotetext{#1}}  % smaller text in bottom margin, e.g. citations
+\makeatletter
+\renewcommand\@makefntext[1]{\noindent#1} % see p. 114 of LaTeX Companion 2nd edition
+\makeatother
+\renewcommand\footnoterule{}
+\def\newblock{\hskip .11em plus .33em minus .07em}
+
+% For displaying multi-line equations in layers
+\newcommand{\disponslide}[2]{%
+  \alt<#1>{#2}{\phantom{#2}}}
+

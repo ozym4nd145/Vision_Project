@@ -1,0 +1,127 @@
+\def\handout{0}   % set to 1 to produce 4-up handouts instead of slides
+\def\notes{0}     % set to 1 to show \note{}s
+\def\adminstuff{0}
+\input{lec_customize}
+%\input{customize}
+\date{}
+\usepackage{hyperref}
+\hypersetup{colorlinks,urlcolor=blue}
+\usepackage{graphicx}  % remove 'demo' option for your real document
+\usepackage{algorithmic,algorithm,xpatch}
+\usepackage{multimedia}
+
+
+\providecommand{\algorithmicfont}{}
+\providecommand{\setalgorithmicfont}[1]{\renewcommand{\algorithmicfont}{#1}}
+\renewcommand{\algorithmiccomment}[1]{{\tiny\hfill$\triangleright$ #1}}
+\algsetup{linenosize=\tiny}
+
+
+\begin{document}
+
+\begin{frame}
+    \title{Virtual Studio}
+    \author{Aman Agrawal, Suyash Agrawal, Madhur Singhal}
+    \institute{COL780}
+    \titlepage
+\end{frame}
+
+\begin{frame}{Problem}
+    \begin{columns}
+        \column{.5\textwidth}
+            \onslide<1->{
+                \begin{quote}
+                    The aim of our project was to place the object/person in front of a green screen in a known 3-D environment in realtime.
+                \end{quote}
+            }
+        \column{.5\textwidth}
+        \begin{figure}
+            \onslide<1->{\includegraphics[width=0.7\linewidth]{imgs/green_intro.png}\\}
+        \end{figure}
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{Method}
+    \uncover<+->{
+        \begin{enumerate}
+            \item<+-> Segment the person using Chroma-Keying
+            \item<+-> Apply a Light mask to prevent the color bleeding
+            \item<+-> Find a homography, to place the person in a known 3-D environment.
+            \item<+->Apply this homography, to generate the final result.
+        \end{enumerate}
+        }
+\end{frame}
+    
+
+\begin{frame}{Chroma Keying}
+    \small
+    
+    % \fontsize{6pt}{7.2}\selectfont
+    \begin{columns}
+        \column{0.3\textwidth}
+            \onslide<1->{ Chroma keying, is a visual effects technique for compositing (layering) two images or video streams together based on color hues (chroma range).\cite{wiki:chroma}}
+        \column{0.7\textwidth}
+        \onslide<1->{
+            \begin{algorithm}[H]
+            {\fontsize{7}{1}\selectfont            
+                \hspace*{\algorithmicindent} \textbf{Input:} Green-Screen frame, high and low thresholds\\}
+            {\fontsize{7}{1}\selectfont            
+                \hspace*{\algorithmicindent} \textbf{Output:} Mask}
+            \begin{algorithmic}[1]
+            {\fontsize{7}{1}\selectfont
+                \STATE Apply Bilateral filter to remove noise, while keeping the edges.
+                \STATE Convert the image to YCrCb color scheme
+                \FOR{\textit{each pixel p}}
+                \STATE $\alpha \gets \sqrt{(Cr_p - Cr_{key})^2 + (Cb_p - Cb_{key})^2}$
+                \IF{ $\alpha < low$ }
+                        \STATE $mask(p) \gets 0.0$ (background)
+                    \ELSIF{ $\alpha > high$ }
+                        \STATE $mask(p) \gets 1.0$ (foreground)
+                    \ELSE 
+                        \STATE $mask(p) \gets \frac{\alpha - low}{high - low} $
+                    \ENDIF
+                \ENDFOR
+                \STATE Erode away the boundaries of foreground object
+            }
+            \end{algorithmic}
+            \caption{Pseudocode for Segmentation}
+            \label{alg:seq}
+            \end{algorithm}        
+            }        
+    \end{columns}
+\end{frame}
+
+
+\begin{frame}{Light Mask}
+    \uncover<+->{
+        \begin{itemize}
+            \item<+-> We brighten each pixel by a multiplicative value
+            \item<+-> TO BE DONE
+        \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}{Homography and Projection}
+    \uncover<+->{
+        \begin{itemize}
+            \item<+-> We calculate a homography between the segmented image and a plane on which we need to project.
+            \item<+-> Apply the Homography to get the final result.
+        \end{itemize}
+    }
+\end{frame}
+
+\begin{frame}{Demo}
+    \begin{center}
+        \href{run:videos/final_demo.avi}{\includegraphics[scale=0.15]{imgs/demo.png}} 
+    \end{center}
+\end{frame}
+
+\begin{frame}{References}
+    \bibliographystyle{unsrt}
+    \bibliography{presentation}
+\end{frame}
+
+\end{document}
+        
+        
