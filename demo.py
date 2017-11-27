@@ -164,7 +164,7 @@ if __name__ == "__main__":
             vid.write(res)
 
         end_time = time.time()
-        print("Time: ",(end_time-start_time))
+        print("Iteration ", iteration, "Time: ", (end_time - start_time))
 
         if args.show:
             cv2.imshow("result",res)
