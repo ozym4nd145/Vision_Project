@@ -6,7 +6,7 @@
 \date{}
 \usepackage{hyperref}
 \hypersetup{colorlinks,urlcolor=blue}
-\usepackage{graphicx}  % remove 'demo' option for your real document
+\usepackage{graphicx}  
 \usepackage{algorithmic,algorithm,xpatch}
 \usepackage{multimedia}
 
@@ -96,8 +96,10 @@
 \begin{frame}{Light Mask}
     \uncover<+->{
         \begin{itemize}
-            \item<+-> We brighten each pixel by a multiplicative value
-            \item<+-> TO BE DONE
+            \item<+-> At the edges of the body in front of the green screen the keying will not work well.
+            \item<+-> To solve this we obtain a edge light mask from the matte obtained by Chroma Keying.
+            \item<+->  This mask is multiplied element-wise with the environment video.
+            \item<+->  Finally we blend this with the keyed video and the environment to get the final result.
         \end{itemize}
     }
 \end{frame}

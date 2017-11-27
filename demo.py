@@ -126,11 +126,27 @@ if __name__ == "__main__":
         ret1, img = cap_green.read()
         ret2, bg = cap_vid.read()
 
-        if (not(ret1 and ret2 and (iteration != end_iter))):
-            cap_green = cv2.VideoCapture(green_vid_path)
-            cap_vid = cv2.VideoCapture(env_vid_path)
-            iteration = 0
-            continue
+        if(iteration != end_iter-1):
+            if(not ret1):
+                cap_green = cv2.VideoCapture(green_vid_path)
+                continue
+            if(not ret2):
+                cap_vid = cv2.VideoCapture(env_vid_path)
+                continue
+        elif(iteration==end_iter-1):
+            break
+        # import imutils
+        # img = imutils.rotate(img,270)
+        # cv2.imshow("dd",img)
+        # cv2.waitKey()
+        # rows,cols,depth = img.shape
+        # M = cv2.getRotationMatrix2D((cols / 2, rows / 2), 90, 1)
+        # img = cv2.warpAffine(img, M, (cols, rows))
+        # if (not(ret1 and ret2 and (iteration != end_iter))):
+        #     cap_green = cv2.VideoCapture(green_vid_path)
+        #     cap_vid = cv2.VideoCapture(env_vid_path)
+        #     iteration = 0
+        #     continue
 
 
         if args.resize!=None:
